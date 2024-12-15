@@ -2638,19 +2638,20 @@ static int sm5720_fg_set_property(struct power_supply *psy,
         break;
     case POWER_SUPPLY_PROP_CHARGE_FULL:
         if (fuelgauge->pdata->capacity_calculation_type &
-            SEC_FUELGAUGE_CAPACITY_TYPE_DYNAMIC_SCALE)
+            SEC_FUELGAUGE_CAPACITY_TYPE_DYNAMIC_SCALE) {
             sm5720_fg_calculate_dynamic_scale(fuelgauge, val->intval);
 
             sm5720_set_full_chg_mq(fuelgauge, sm5720_meas_mq_dump(fuelgauge));
             fuelgauge->info.full_mq_dump = sm5720_meas_mq_dump(fuelgauge);
 #if defined(CONFIG_BATTERY_AGE_FORECAST)
         pr_info("%s: POWER_SUPPLY_PROP_CHARGE_FULL : q_max_now = 0x%x \n", __func__, fuelgauge->info.q_max_now);
-		if (fuelgauge->info.q_max_now !=
+	    if (fuelgauge->info.q_max_now !=
             fuelgauge->info.q_max_table[get_v_max_index_by_cycle(fuelgauge)]){
-            if (!sm5720_fg_reset(fuelgauge, false))
+            	if (!sm5720_fg_reset(fuelgauge, false))
                 return -EINVAL;
-        }
+	    }
 #endif
+        }
 
         break;
     case POWER_SUPPLY_PROP_ONLINE:
@@ -3480,7 +3481,7 @@ static int sm5720_fuelgauge_probe(struct platform_device *pdev)
     fuelgauge->capacity_max = fuelgauge->pdata->capacity_max;
     raw_soc_val.intval = sm5720_get_soc(fuelgauge);
 
-    if (raw_soc_val.intval > fuelgauge->capacity_max)
+    if (raw_soc_val.intval > fuelgauge->capacity_max) {
         sm5720_fg_calculate_dynamic_scale(fuelgauge, 100);
 
 	/* SW/HW init code. SW/HW V Empty mode must be opposite ! */
@@ -3495,8 +3496,9 @@ static int sm5720_fuelgauge_probe(struct platform_device *pdev)
 	if (!fuelgauge->psy_fg) {
         pr_err("%s: Failed to Register psy_fg\n", __func__);
         goto err_data_free;
-    }
+	}
 
+    }
     fuelgauge->fg_irq = pdata->irq_base + SM5720_FG_IRQ_INT_LOW_VOLTAGE;
     pr_info("[%s]IRQ_BASE(%d) FG_IRQ(%d)\n",
         __func__, pdata->irq_base, fuelgauge->fg_irq);
@@ -3576,12 +3578,13 @@ static void sm5720_fuelgauge_shutdown(struct platform_device *pdev)
 {
     struct sm5720_fuelgauge_data *fuelgauge = platform_get_drvdata(pdev);
 
-    if (fuelgauge->using_hw_vempty)
+    if (fuelgauge->using_hw_vempty) {
         sm5720_fg_set_vempty(fuelgauge, false);
 
 	sm5720_meas_mq_suspend(fuelgauge);
 	/* To reduce current leakage during power off state by SM */
 	sm5720_write_word(fuelgauge->i2c, SM5720_FG_REG_MIX_RATE, 0x0F03);
+    }
 }
 
 static SIMPLE_DEV_PM_OPS(sm5720_fuelgauge_pm_ops, sm5720_fuelgauge_suspend,

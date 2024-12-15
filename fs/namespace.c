@@ -1265,37 +1265,25 @@ vfs_kern_mount(struct file_system_type *type, int flags, const char *name, void 
 		}
 	}
 	if (flags & MS_KERNMOUNT)
-#ifdef CONFIG_RKP_NS_PROT
-		rkp_set_mnt_flags(mnt->mnt, MNT_INTERNAL);
-		root = mount_fs(type, flags, name, mnt->mnt, data);
-#else
 		mnt->mnt.mnt_flags = MNT_INTERNAL;
-		root = mount_fs(type, flags, name, &mnt->mnt, data);
-#endif
 
+	root = mount_fs(type, flags, name, &mnt->mnt, data);
 	if (IS_ERR(root)) {
 		mnt_free_id(mnt);
 		free_vfsmnt(mnt);
 		return ERR_CAST(root);
 	}
-#ifdef CONFIG_RKP_NS_PROT
-	rkp_set_mnt_root_sb(mnt->mnt, root, root->d_sb);
-	mnt->mnt_mountpoint = mnt->mnt->mnt_root;
-#else
+
 	mnt->mnt.mnt_root = root;
 	mnt->mnt.mnt_sb = root->d_sb;
 	mnt->mnt_mountpoint = mnt->mnt.mnt_root;
-#endif	
 	mnt->mnt_parent = mnt;
 	lock_mount_hash();
 	list_add_tail(&mnt->mnt_instance, &root->d_sb->s_mounts);
 	unlock_mount_hash();
-#ifdef CONFIG_RKP_NS_PROT
-	return mnt->mnt;
-#else
 	return &mnt->mnt;
-#endif
 }
+
 EXPORT_SYMBOL_GPL(vfs_kern_mount);
 
 struct vfsmount *

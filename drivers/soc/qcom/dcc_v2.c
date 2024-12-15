@@ -290,10 +290,7 @@ static int __dcc_ll_cfg(struct dcc_drvdata *drvdata, int curr_list)
 				 * processing the list
 				 */
 				link |= ((0x1 << 8) & BM(8, 14));
-				ret = dcc_sram_writel(drvdata,
-							link, sram_offset);
-				if (ret)
-					goto overstep;
+				dcc_sram_writel(drvdata, link, sram_offset);
 				sram_offset += 4;
 				/* Reset link and prev_off */
 				addr = 0x00;
@@ -301,23 +298,12 @@ static int __dcc_ll_cfg(struct dcc_drvdata *drvdata, int curr_list)
 				prev_off = 0;
 				prev_addr = addr;
 			}
-
 			addr = DCC_RD_MOD_WR_DESCRIPTOR;
-			ret = dcc_sram_writel(drvdata, addr, sram_offset);
-			if (ret)
-				goto overstep;
+			dcc_sram_writel(drvdata, addr, sram_offset);
 				sram_offset += 4;
-
-			ret = dcc_sram_writel(drvdata,
-					entry->mask, sram_offset);
-			if (ret)
-				goto overstep;
+			dcc_sram_writel(drvdata, entry->mask, sram_offset);
 				sram_offset += 4;
-
-			ret = dcc_sram_writel(drvdata,
-					entry->write_val, sram_offset);
-			if (ret)
-				goto overstep;
+			dcc_sram_writel(drvdata, entry->write_val, sram_offset);
 				sram_offset += 4;
 			addr = 0;
 			break;
@@ -372,23 +358,18 @@ static int __dcc_ll_cfg(struct dcc_drvdata *drvdata, int curr_list)
 				 * processing the list
 				 */
 				link |= ((0x1 << 8) & BM(8, 14));
-				ret = dcc_sram_writel(drvdata,
-						link, sram_offset);
-				if (ret)
-					goto overstep;
+				dcc_sram_writel(drvdata, link, sram_offset);
 				sram_offset += 4;
 				/* Reset link and prev_off */
 				addr = 0x00;
 				prev_off = 0;
 				prev_addr = addr;
 			}
-
 			off = entry->offset/4;
 			/* write new offset-length pair to correct position */
 			link |= ((off & BM(0, 7)) | BIT(15) |
 				 ((entry->len << 8) & BM(8, 14)));
 			link |= DCC_LINK_DESCRIPTOR;
-
 			/* Address type */
 			addr = (entry->base >> 4) & BM(0, 27);
 			if (entry->apb_bus)
@@ -397,21 +378,11 @@ static int __dcc_ll_cfg(struct dcc_drvdata *drvdata, int curr_list)
 			else
 				addr |= DCC_ADDR_DESCRIPTOR | DCC_WRITE_IND
 					| DCC_AHB_IND;
-
-			ret = dcc_sram_writel(drvdata, addr, sram_offset);
-			if (ret)
-				goto overstep;
+			dcc_sram_writel(drvdata, addr, sram_offset);
 				sram_offset += 4;
-
-			ret = dcc_sram_writel(drvdata, link, sram_offset);
-			if (ret)
-				goto overstep;
+			dcc_sram_writel(drvdata, link, sram_offset);
 				sram_offset += 4;
-
-			ret = dcc_sram_writel(drvdata,
-				entry->write_val, sram_offset);
-			if (ret)
-				goto overstep;
+			dcc_sram_writel(drvdata, entry->write_val, sram_offset);
 				sram_offset += 4;
 			addr = 0x00;
 			link = 0;
