@@ -47,8 +47,6 @@ obj-y += sdp/
 obj-y += sdp/built-in.o
 endif
 
-# MST driver
-obj-$(CONFIG_MST_LDO)	  += mstdrv/
 
 #TZ ICCC
 obj-$(CONFIG_TZ_ICCC)     += tz_iccc/
