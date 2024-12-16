@@ -1,6 +1,6 @@
-#pragma GCC diagnostic ignored "-Wstrict-prototypes"
+#pragma GCC diagnostic ignored ""
 #include <gtk/gtk.h>
-#pragma GCC diagnostic error "-Wstrict-prototypes"
+#pragma GCC diagnostic error ""
 
 int main(int argc, char *argv[])
 {

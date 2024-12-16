@@ -18029,6 +18029,9 @@ dhd_nla_put_sssr_dump_len(void *ndev, uint32 *arr_len)
 #endif /* DHD_SSSR_DUMP */
 
 uint32
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wstrict-prototypes"
+
 dhd_get_time_str_len()
 {
 	char *ts = NULL, time_str[128];
@@ -18038,6 +18041,7 @@ dhd_get_time_str_len()
 			"\n\n ========== LOG DUMP TAKEN AT : %s =========\n", ts);
 	return strlen(time_str);
 }
+#pragma GCC diagnostic pop
 
 #if defined(BCMPCIE)
 uint32
