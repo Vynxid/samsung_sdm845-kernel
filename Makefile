@@ -529,6 +529,32 @@ KBUILD_CFLAGS += $(call cc-disable-warning, duplicate-decl-specifier)
 KBUILD_CFLAGS += -Wno-tautological-constant-out-of-range-compare
 KBUILD_CFLAGS += -Wno-undefined-inline
 
+# Quiet clang 20 and GCC 14 warnings
+KBUILD_CFLAGS += $(call cc-disable-warning, unused-but-set-variable)
+KBUILD_CFLAGS += $(call cc-disable-warning, unaligned-access)
+KBUILD_CFLAGS += $(call cc-disable-warning, enum-conversion)
+KBUILD_CFLAGS += $(call cc-disable-warning, frame-larger-than)
+KBUILD_CFLAGS += $(call cc-disable-warning, expansion-to-defined)
+KBUILD_CFLAGS += $(call cc-disable-warning, bitwise-instead-of-logical)
+KBUILD_CFLAGS += $(call cc-disable-warning, strncat-size)
+KBUILD_CFLAGS += $(call cc-disable-warning, logical-not-parentheses)
+KBUILD_CFLAGS += $(call cc-disable-warning, pointer-bool-conversion)
+KBUILD_CFLAGS += $(call cc-disable-warning, constant-logical-operand)
+KBUILD_CFLAGS += $(call cc-disable-warning, void-pointer-to-enum-cast)
+KBUILD_CFLAGS += $(call cc-disable-warning, ignored-optimization-argument)
+KBUILD_CFLAGS += $(call cc-disable-warning, non-literal-null-conversion)
+KBUILD_CFLAGS += $(call cc-disable-warning, strlcpy-strlcat-size)
+KBUILD_CFLAGS += $(call cc-disable-warning, fortify-source)
+KBUILD_CFLAGS += $(call cc-disable-warning, parentheses-equality)
+KBUILD_CFLAGS += $(call cc-disable-warning, switch-bool)
+KBUILD_CFLAGS += $(call cc-disable-warning, tentative-definition-incomplete-type)
+KBUILD_CFLAGS += $(call cc-disable-warning, tautological-overlap-compare)
+KBUILD_CFLAGS += $(call cc-disable-warning, unused-const-variable)
+KBUILD_CFLAGS += $(call cc-disable-warning, self-assign)
+KBUILD_CFLAGS += $(call cc-disable-warning, single-bit-bitfield-constant-conversion)
+KBUILD_CFLAGS += $(call cc-disable-warning, RWX)
+
+
 # Quiet clang warning: comparison of unsigned expression < 0 is always false
 KBUILD_CFLAGS += $(call cc-disable-warning, tautological-compare)
 # CLANG uses a _MergedGlobals as optimization, but this breaks modpost, as the
