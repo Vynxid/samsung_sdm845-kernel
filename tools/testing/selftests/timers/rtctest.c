@@ -2,7 +2,7 @@
  *      Real Time Clock Driver Test/Example Program
  *
  *      Compile with:
- *		     gcc -s -Wall  rtctest.c -o rtctest
+ *		     gcc -s -Wall -Wstrict-prototypes rtctest.c -o rtctest
  *
  *      Copyright (C) 1996, Paul Gortmaker.
  *
