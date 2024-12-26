@@ -26,10 +26,6 @@ jobs:
         defconfig: starqlte_chn_open_defconfig
         image: Image.gz-dtb
 
-    - name: Install Kernel Modules
-      run: |
-        make modules_install INSTALL_MOD_PATH=./modules
-
     - name: Verify MemKernel Module
       run: |
         find ./modules -name "memkernel.ko"
