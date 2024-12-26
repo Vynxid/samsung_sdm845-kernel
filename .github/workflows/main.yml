@@ -14,6 +14,11 @@ jobs:
       run: |
        curl -LSs "https://raw.githubusercontent.com/Poko-Apps/MemKernel/main/kernel/setup.sh" | bash -s M Starqltechn
 
+    - name: Install required dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y clang-13 lld-13
+
     - name: Android kernel build
       uses: lemniskett/android-kernel-actions@master
       id: build
@@ -21,7 +26,7 @@ jobs:
         NAME: Starqlte
       with:
         arch: arm64
-        compiler: clang/15
+        compiler: clang/13
         defconfig: starqlte_chn_open_defconfig
         image: Image.gz-dtb
 
