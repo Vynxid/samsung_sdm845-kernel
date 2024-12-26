@@ -7,40 +7,37 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    # Checkout kernel source
     - name: Checkout kernel source
       uses: actions/checkout@v4
 
-    # Set up MemKernel as a module (M-OUT)
-    - name: Set up MemKernel as a module (M-OUT)
+    - name: Set up MemKernel as a module (M-OUT) with specified name
       run: |
         curl -LSs "https://raw.githubusercontent.com/Poko-Apps/MemKernel/main/kernel/setup.sh" | bash -s M
+        cat arch/arm64/configs/starqlte_chn_open_defconfig | grep MEMKERNEL
 
-    # Set up GCC 14.2.Rel1 toolchain
-    - name: Set Up GCC 14.2.Rel1 Toolchain
+    - name: Android kernel build
+      uses: lemniskett/android-kernel-actions@master
+      id: build
+      env:
+        NAME: Starqltechn
+      with:
+        arch: arm64
+        compiler: gcc/12
+        defconfig: starqlte_chn_open_defconfig
+        image: Image.gz-dtb
+
+    - name: Install Kernel Modules
       run: |
-        export PATH=/path/to/gcc-14.2/bin:$PATH
-        export CROSS_COMPILE=aarch64-linux-gnu-
-        export CROSS_COMPILE_ARM32=arm-linux-gnueabi-
+        make modules_install INSTALL_MOD_PATH=./modules
 
-    # Build kernel and modules
-    - name: Build Kernel and Modules
+    - name: Verify MemKernel Module
       run: |
-        make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- starqlte_chn_open_defconfig > build.log 2>&1
-        make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- -j$(nproc) >> build.log 2>&1 || true
-        make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- modules -j$(nproc) >> build.log 2>&1 || true
+        find ./modules -name "memkernel.ko"
 
-    # Locate built modules
-    - name: Locate Built Modules
-      run: |
-        find ./out -name "*.ko" || echo "No modules found"
-
-    # Upload kernel, modules, and logs
     - name: Upload Kernel and Module
       uses: actions/upload-artifact@v4
       with:
-        name: kernel-build-artifacts
+        name: module
         path: |
-          ./out/arch/arm64/boot/Image.gz-dtb
-          ./out/drivers/memkernel/memkernel.ko
-          build.log
+          ${{ steps.build.outputs.outfile }}
+          ./modules/lib/modules/*/kernel/drivers/memkernel/memkernel.ko
