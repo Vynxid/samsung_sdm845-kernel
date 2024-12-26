@@ -7,33 +7,28 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    # 1. Checkout kernel source
     - name: Checkout kernel source
       uses: actions/checkout@v4
 
-    # 2. Set up MemKernel as a module (M-OUT) with specified name
-    - name: Set up MemKernel as a module
+    - name: Set up MemKernel as a module (M-OUT) with specified name
       run: |
-        curl -LSs "https://raw.githubusercontent.com/Poko-Apps/MemKernel/main/kernel/setup.sh" | bash -s M Starqltechn
+       curl -LSs "https://raw.githubusercontent.com/Poko-Apps/MemKernel/main/kernel/setup.sh" | bash -s M Starqltechn
 
-    # 3. Android kernel build
     - name: Android kernel build
-      run: |
-        # Setup environment
-        export ARCH=arm64
-        export CROSS_COMPILE=aarch64-linux-gnu-
-        export PATH="/usr/lib/llvm-11/bin:$PATH"
+      uses: lemniskett/android-kernel-actions@master
+      id: build
+      env:
+        NAME: Starqlte
+      with:
+        arch: arm64
+        compiler: clang/11
+        defconfig: starqlte_chn_open_defconfig
+        image: Image.gz-dtb
 
-        # Build kernel
-        make starqlte_chn_open_defconfig
-        make -j$(nproc) > build.log 2>&1 || true
-
-    # 4. Upload Kernel, Module, and Logs
-    - name: Upload Kernel, Module, and Logs
+    - name: Upload Kernel and Module
       uses: actions/upload-artifact@v4
       with:
-        name: kernel-build-artifacts
+        name: module
         path: |
-          ./build.log
-          ./out/arch/arm64/boot/Image.gz-dtb
+          ${{ steps.build.outputs.outfile }}
           ./out/drivers/memkernel/memkernel.ko
