@@ -12,16 +12,16 @@ jobs:
 
     - name: Set up MemKernel as a module (M-OUT) with specified name
       run: |
-       curl -LSs "https://raw.githubusercontent.com/Poko-Apps/MemKernel/main/kernel/setup.sh" | bash -s M Starqltechn
+        curl -LSs "https://raw.githubusercontent.com/Poko-Apps/MemKernel/main/kernel/setup.sh" | bash -s M dogi
 
     - name: Android kernel build
       uses: lemniskett/android-kernel-actions@master
       id: build
       env:
-        NAME: Starqlte
+        NAME: Starqltechn
       with:
         arch: arm64
-        compiler: gcc/9
+        compiler: gcc/12
         defconfig: starqlte_chn_open_defconfig
         image: Image.gz-dtb
 
