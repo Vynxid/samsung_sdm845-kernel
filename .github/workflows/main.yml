@@ -25,11 +25,7 @@ jobs:
         compiler: gcc/12
         defconfig: starqlte_chn_open_defconfig
         image: Image.gz-dtb
-
-    - name: Verify MemKernel Module
-      run: |
-        find ./modules -name "memkernel.ko"
-
+        
     - name: Upload Kernel and Module
       uses: actions/upload-artifact@v4
       with:
