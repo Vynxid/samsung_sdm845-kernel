@@ -758,6 +758,15 @@ else
 KBUILD_CFLAGS   += -O2
 endif
 
+# Tell compiler to tune the performance of the code for a specified
+ifeq ($(cc-name),gcc)
+KBUILD_CFLAGS += -mcpu=cortex-a75.cortex-a55 -mtune=cortex-a75 -funswitch-loops -funroll-loops -fpeel-loops -fsplit-loops -Wno-error -Wa,-march=armv8-a+crypto
+KBUILD_AFLAGS += -mcpu=cortex-a75.cortex-a55 -mtune=cortex-a75 -funswitch-loops -funroll-loops -fpeel-loops -fsplit-loops -Wno-error -Wa,-march=armv8-a+crypto
+else ifeq ($(cc-name),clang)
+KBUILD_CFLAGS += -mcpu=cortex-a75+crypto -mtune=cortex-a55 -funroll-loops
+KBUILD_AFLAGS += -mcpu=cortex-a75+crypto -mtune=cortex-a55 -funroll-loops
+endif
+
 # Tell gcc to never replace conditional load with a non-conditional one
 KBUILD_CFLAGS	+= $(call cc-option,--param=allow-store-data-races=0)
 KBUILD_CFLAGS	+= $(call cc-option,-fno-allow-store-data-races)
