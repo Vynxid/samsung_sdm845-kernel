@@ -34,9 +34,9 @@
 extern int dwc_msm_vbus_event(bool enable);
 extern int dwc_msm_id_event(bool enable);
 extern void dwc3_max_speed_setting(int speed);
-
+#ifdef CONFIG_USB_ANDROID_SAMSUNG_COMPOSITE
 extern void set_ncm_ready(bool ready);
-
+#endif
 #if defined(CONFIG_CCIC_NOTIFIER)
 int is_host;
 #endif
@@ -306,15 +306,15 @@ static int otg_accessory_power(bool enable)
 
 	return ret;
 }
-
 static int qcom_set_peripheral(bool enable)
 {
 	dwc_msm_vbus_event(enable);
+#ifdef CONFIG_USB_ANDROID_SAMSUNG_COMPOSITE
 	if(!enable)
 		set_ncm_ready(false);
+#endif
 	return 0;
 }
-
 static int qcom_set_host(bool enable)
 {
 	dwc_msm_id_event(enable);
