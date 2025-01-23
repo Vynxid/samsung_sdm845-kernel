@@ -10,16 +10,15 @@ jobs:
     - name: Checkout kernel source
       uses: actions/checkout@v4
 
-    - name: Download and set up Clang 20
-      run: |
-        wget -O clang-20.tar.gz https://github.com/ZyCromerZ/Clang/releases/download/20.0.0git-20250103-release/Clang-20.0.0git-20250103.tar.gz
-        tar -xvf clang-20.tar.gz -C /usr/local/
-        export PATH="/usr/local/Clang-20.0.0/bin:$PATH"
-        clang --version  # Verify Clang version
-
     - name: Set up MemKernel as a module (M-OUT) with specified name
       run: |
         curl -LSs "https://raw.githubusercontent.com/Poko-Apps/MemKernel/main/kernel/setup.sh" | bash -s M dogi
+
+    - name: Download Clang 20
+      run: |
+        wget https://github.com/ZyCromerZ/Clang/releases/download/20.0.0git-20250103-release/Clang-20.0.0git-20250103.tar.gz
+        tar -xf Clang-20.0.0git-20250103.tar.gz
+        export PATH=$PWD/clang/bin:$PATH
 
     - name: Android kernel build
       uses: lemniskett/android-kernel-actions@master
@@ -29,6 +28,7 @@ jobs:
       with:
         arch: arm64
         compiler: clang
+        compiler_path: ${{ github.workspace }}/clang/bin
         defconfig: starqlte_chn_open_defconfig
         image: Image.gz-dtb
 
