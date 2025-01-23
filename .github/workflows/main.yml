@@ -21,12 +21,6 @@ jobs:
         sudo apt update
         sudo apt install -y gcc-14 g++-14 gcc-14-aarch64-linux-gnu gcc-14-arm-linux-gnueabi
 
-        # Download and setup ZyC Clang 20
-        wget https://github.com/kdrag0n/proton-clang/releases/download/zyc-20/zyc-clang-20.zip
-        unzip zyc-clang-20.zip -d /usr/local/zyc-clang
-        export PATH="/usr/local/zyc-clang/bin:$PATH"
-        clang --version  # Verify Clang installation
-
     - name: Set up MemKernel as a module (M-OUT) with specified name
       run: |
         curl -LSs "https://raw.githubusercontent.com/Poko-Apps/MemKernel/main/kernel/setup.sh" | bash -s M dogi
@@ -38,8 +32,7 @@ jobs:
         NAME: Starqltechn
       with:
         arch: arm64
-        compiler: clang
-        clang_path: /usr/local/zyc-clang
+        compiler: gcc
         gcc_version: 14.2
         defconfig: starqlte_chn_open_defconfig
         image: Image.gz-dtb
