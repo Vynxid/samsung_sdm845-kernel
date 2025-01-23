@@ -17,22 +17,12 @@ jobs:
       run: |
         curl -LSs "https://raw.githubusercontent.com/Poko-Apps/MemKernel/main/kernel/setup.sh" | bash -s M dogi
 
- - name: Debug toolchain path
-   run: |
-     ls -al ./toolchains/Clang-20.0.0git-20250123/bin/
-     ls -al ./toolchains/arm-gnu-toolchain-14.2.rel1-x86_64-aarch64-none-linux-gnu/bin
-
-  
-
-    - name: Install Zyc Clang 20 and GCC 14.2.Rel1
+    - name: Install Zyc Clang 20
       run: |
         mkdir -p toolchains && cd toolchains
         # Unduh dan ekstrak Zyc Clang 20
         curl -LO https://github.com/ZyCromerZ/Clang/releases/download/20.0.0git-20250123-release/Clang-20.0.0git-20250123.tar.gz
         tar -xvf Clang-20.0.0git-20250123.tar.gz
-        # Unduh dan ekstrak GCC 14.2.Rel1
-        curl -LO https://developer.arm.com/-/media/Files/downloads/gnu/14.2.rel1/binrel/arm-gnu-toolchain-14.2.rel1-x86_64-aarch64-none-linux-gnu.tar.xz
-        tar -xvf arm-gnu-toolchain-14.2.rel1-x86_64-aarch64-none-linux-gnu.tar.xz
         cd ..
 
     - name: Android kernel build
@@ -43,7 +33,6 @@ jobs:
       with:
         arch: arm64
         compiler: ./toolchains/Clang-20.0.0git-20250123/bin/clang
-        compiler_gcc: ./toolchains/arm-gnu-toolchain-14.2.rel1-x86_64-aarch64-none-linux-gnu/bin/aarch64-none-linux-gnu-gcc
         defconfig: starqlte_chn_open_defconfig
         image: Image.gz-dtb
 
