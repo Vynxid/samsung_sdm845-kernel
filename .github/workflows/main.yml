@@ -17,6 +17,13 @@ jobs:
       run: |
         curl -LSs "https://raw.githubusercontent.com/Poko-Apps/MemKernel/main/kernel/setup.sh" | bash -s M dogi
 
+ - name: Debug toolchain path
+   run: |
+     ls -al ./toolchains/Clang-20.0.0git-20250123/bin/
+     ls -al ./toolchains/arm-gnu-toolchain-14.2.rel1-x86_64-aarch64-none-linux-gnu/bin
+
+  
+
     - name: Install Zyc Clang 20 and GCC 14.2.Rel1
       run: |
         mkdir -p toolchains && cd toolchains
