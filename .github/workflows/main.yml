@@ -10,8 +10,10 @@ jobs:
     - name: Checkout kernel source
       uses: actions/checkout@v4
 
-    - name: Configure Git safe directory
-      run: git config --global --add safe.directory /github/workspace
+    - name: Fix ownership issue
+      run: |
+        sudo chown -R $USER:$USER $GITHUB_WORKSPACE
+        git config --global --add safe.directory $GITHUB_WORKSPACE
 
     - name: Set up MemKernel as a module (M-OUT) with specified name
       run: |
