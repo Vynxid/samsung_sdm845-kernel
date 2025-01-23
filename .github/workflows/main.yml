@@ -14,29 +14,24 @@ jobs:
       run: |
         curl -LSs "https://raw.githubusercontent.com/Poko-Apps/MemKernel/main/kernel/setup.sh" | bash -s M vinn
 
-    - name: Download zyc clang 20 compiler
-      uses: actions/download-artifact@v3
-      with:
-        name: compiler  # Assuming the artifact containing the compiler is named 'compiler'
-
-    - name: Extract zyc clang 20 compiler
+    - name: Download and set up ZyC Clang 20
       run: |
-        tar -xzf ${{ paths.downloaded }}  # Extract the downloaded artifact (assuming it's a tar archive)
-
-    - name: Set up environment variable for zyc clang 20 compiler
-      run: |
-        echo "export PATH=$HOME/clang-20.0.0git-20250103/bin:$PATH" >> $GITHUB_ENV  # Set the path to the compiler's bin directory
+        mkdir -p clang
+        curl -LSs "https://github.com/ZyCromerZ/Clang/releases/download/20.0.0git-20250103-release/Clang-20.0.0git-20250103.tar.gz" | tar -xz -C clang --strip-components=1
+        echo "export PATH=$(pwd)/clang/bin:\$PATH" >> $GITHUB_ENV
+        echo "export LD_LIBRARY_PATH=$(pwd)/clang/lib:\$LD_LIBRARY_PATH" >> $GITHUB_ENV
+        echo "Clang version:"
+        clang/bin/clang --version
 
     - name: Android kernel build
       uses: lemniskett/android-kernel-actions@master
       id: build
       env:
         NAME: Starqltechn
-        CC: clang  # Use clang as the compiler
-        CXX: clang++  # Use clang++ as the C++ compiler (if applicable)
-        # Rest of your existing environment variables (arch, defconfig, image)
       with:
         arch: arm64
+        compiler: clang
+        compiler_path: ${{ github.workspace }}/clang
         defconfig: starqlte_chn_open_defconfig
         image: Image.gz-dtb
 
