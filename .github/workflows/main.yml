@@ -10,18 +10,29 @@ jobs:
     - name: Checkout kernel source
       uses: actions/checkout@v4
 
-    - name: Set up MemKernel as a module (M-OUT) with specified name
+    - name: Download and set up Clang 20
       run: |
-        curl -LSs "https://raw.githubusercontent.com/Poko-Apps/MemKernel/main/kernel/setup.sh" | bash -s M ewe
+        # Membuat direktori untuk Clang dan mengunduh Clang 20
+        mkdir -p clang
+        curl -LSs "https://github.com/ZyCromerZ/Clang/releases/download/20.0.0git-20250103-release/Clang-20.0.0git-20250103.tar.gz" | tar -xz -C clang --strip-components=1
+        
+        # Menambahkan Clang ke PATH dan LD_LIBRARY_PATH
+        echo "export PATH=$(pwd)/clang/bin:\$PATH" >> $GITHUB_ENV
+        echo "export LD_LIBRARY_PATH=$(pwd)/clang/lib:\$LD_LIBRARY_PATH" >> $GITHUB_ENV
+        source $GITHUB_ENV
+        
+        # Memverifikasi versi Clang
+        clang --version
 
-    - name: Android kernel build
+    - name: Build kernel using Clang 20
       uses: lemniskett/android-kernel-actions@master
       id: build
       env:
         NAME: Starqltechn
       with:
         arch: arm64
-        compiler: clang/15
+        compiler: clang
+        compiler_path: ${{ github.workspace }}/clang
         defconfig: starqlte_chn_open_defconfig
         image: Image.gz-dtb
 
@@ -31,4 +42,4 @@ jobs:
         name: module
         path: |
           ${{ steps.build.outputs.outfile }}
-          ./out/drivers/memkernel/ewe.memk.ko
+          ./out/drivers/memkernel/*.ko
