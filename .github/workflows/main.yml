@@ -12,7 +12,7 @@ jobs:
 
     - name: Set up MemKernel as a module (M-OUT) with specified name
       run: |
- curl -LSs "https://raw.githubusercontent.com/Poko-Apps/MemKernel/main/kernel/setup.sh" | bash -s M vinn
+        curl -LSs "https://raw.githubusercontent.com/Poko-Apps/MemKernel/main/kernel/setup.sh" | bash -s M ewe
 
     - name: Android kernel build
       uses: lemniskett/android-kernel-actions@master
@@ -31,4 +31,4 @@ jobs:
         name: module
         path: |
           ${{ steps.build.outputs.outfile }}
-          ./out/drivers/memkernel/vinn.memk.ko
+          ./out/drivers/memkernel/ewe.memk.ko
