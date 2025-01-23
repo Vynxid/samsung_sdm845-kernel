@@ -10,44 +10,16 @@ jobs:
     - name: Checkout kernel source
       uses: actions/checkout@v4
 
-    - name: Set Git safe directory
-      run: git config --global --add safe.directory /github/workspace
+    - name: Download and set up Clang 20
+      run: |
+        wget -O clang-20.tar.gz https://github.com/ZyCromerZ/Clang/releases/download/20.0.0git-20250103-release/Clang-20.0.0git-20250103.tar.gz
+        tar -xvf clang-20.tar.gz -C /usr/local/
+        export PATH="/usr/local/Clang-20.0.0/bin:$PATH"
+        clang --version  # Verify Clang version
 
     - name: Set up MemKernel as a module (M-OUT) with specified name
       run: |
         curl -LSs "https://raw.githubusercontent.com/Poko-Apps/MemKernel/main/kernel/setup.sh" | bash -s M dogi
-
-    - name: Install Zyc Clang 20 and GCC 14.2
-      run: |
-        mkdir -p toolchains && cd toolchains
-        # Unduh dan cek file Clang 20
-        curl -LO https://github.com/ZyCromerZ/Clang/releases/download/20.0.0git-20250123-release/Clang-20.0.0git-20250123.tar.gz
-        # Verifikasi file yang diunduh
-        ls -al
-        # Periksa ukuran file untuk memastikan file terunduh dengan benar
-        du -h Clang-20.0.0git-20250123.tar.gz
-        # Ekstrak Clang
-        tar -xvf Clang-20.0.0git-20250123.tar.gz
-        # Verifikasi hasil ekstraksi
-        ls -al
-        cd ..
-        
-        # Unduh dan ekstrak GCC 14.2
-        curl -LO https://developer.arm.com/-/media/Files/downloads/gnu/14.2.rel1/binrel/arm-gnu-toolchain-14.2.rel1-x86_64-aarch64-none-linux-gnu.tar.xz
-        # Verifikasi file yang diunduh
-        ls -al
-        du -h arm-gnu-toolchain-14.2.rel1-x86_64-aarch64-none-linux-gnu.tar.xz
-        tar -xvf arm-gnu-toolchain-14.2.rel1-x86_64-aarch64-none-linux-gnu.tar.xz
-        # Verifikasi hasil ekstraksi GCC
-        ls -al
-        cd ..
-
-    - name: Debug toolchain structure
-      run: |
-        echo "Mengecek struktur toolchain Clang:"
-        ls -R ./toolchains/Clang-20.0.0git-20250123/
-        echo "Mengecek struktur toolchain GCC:"
-        ls -R ./toolchains/arm-gnu-toolchain-14.2.rel1-x86_64-aarch64-none-linux-gnu/
 
     - name: Android kernel build
       uses: lemniskett/android-kernel-actions@master
@@ -56,8 +28,7 @@ jobs:
         NAME: Starqltechn
       with:
         arch: arm64
-        compiler: ./toolchains/Clang-20.0.0git-20250123/bin/clang  # Update dengan path yang benar jika diperlukan
-        compiler_gcc: ./toolchains/arm-gnu-toolchain-14.2.rel1-x86_64-aarch64-none-linux-gnu/bin/aarch64-none-linux-gnu-gcc
+        compiler: clang
         defconfig: starqlte_chn_open_defconfig
         image: Image.gz-dtb
 
