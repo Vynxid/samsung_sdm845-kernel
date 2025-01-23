@@ -24,7 +24,7 @@ jobs:
         wget https://github.com/ZyCromerZ/Clang/releases/download/20.0.0git-20250103-release/Clang-20.0.0git-20250103.tar.gz
         tar -xzf Clang-20.0.0git-20250103.tar.gz
         ls # List the contents to verify the directory name
-        sudo mv Clang-20.0.0git-20250103 /usr/local/clang-20
+        sudo mv Clang-20.0.0git-20250103 /usr/local/clang-20 || sudo mv $(basename Clang-20.0.0git-20250103*) /usr/local/clang-20
         export PATH=/usr/local/clang-20/bin:$PATH
 
     - name: Android kernel build
