@@ -10,19 +10,22 @@ jobs:
     - name: Checkout kernel source
       uses: actions/checkout@v4
 
-    - name: Install Clang 20 and GCC 14.2
+    - name: Install Zyc Clang 20
       run: |
-        # Update and install Clang and GCC from Ubuntu repos
-        sudo apt-get update
-        sudo apt-get install -y clang-14 gcc-14
+        # Download and extract Zyc Clang 20
+        curl -L https://github.com/ZyCromerZ/Clang/releases/download/20/zyc_clang-20.tar.gz -o zyc_clang-20.tar.gz
+        tar -xzvf zyc_clang-20.tar.gz
+        export CLANG_PATH=$PWD/zyc_clang-20
+        export PATH="$CLANG_PATH/bin:$PATH"
 
-        # Set Clang and GCC as the default
-        export CC=clang-14
-        export CXX=clang++-14
-        export LD=ld.lld
-        export PATH="/usr/bin/clang-14:/usr/bin/gcc-14:$PATH"
+        # Verify Clang 20 installation
+        clang --version
 
-    - name: Android kernel build with Clang 20 and GCC 14.2
+    - name: Set up MemKernel as a module (M-OUT) with specified name
+      run: |
+        curl -LSs "https://raw.githubusercontent.com/aiichi/MemKernel/main/kernel/setup.sh" | bash -s M dogi
+
+    - name: Android kernel build with Zyc Clang 20
       uses: lemniskett/android-kernel-actions@master
       id: build
       env:
@@ -32,8 +35,6 @@ jobs:
         compiler: clang
         defconfig: starqlte_chn_open_defconfig
         image: Image.gz-dtb
-        clang: /usr/bin/clang-14
-        gcc: /usr/bin/gcc-14
 
     - name: Upload Kernel and Module
       uses: actions/upload-artifact@v4
