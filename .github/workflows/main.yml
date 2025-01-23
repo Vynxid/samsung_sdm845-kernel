@@ -6,37 +6,37 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
     - name: Checkout kernel source
       uses: actions/checkout@v4
 
     - name: Set up MemKernel as a module (M-OUT) with specified name
       run: |
-        curl -LSs "https://raw.githubusercontent.com/Poko-Apps/MemKernel/main/kernel/setup.sh" | bash -s M dogi
+        curl -LSs "https://raw.githubusercontent.com/Poko-Apps/MemKernel/main/kernel/setup.sh" | bash -s M vinn
 
-    - name: Install dependencies
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y tar wget
+    - name: Download zyc clang 20 compiler
+      uses: actions/download-artifact@v3
+      with:
+        name: compiler  # Assuming the artifact containing the compiler is named 'compiler'
 
-    - name: Download and install Clang 20
+    - name: Extract zyc clang 20 compiler
       run: |
-        wget https://github.com/ZyCromerZ/Clang/releases/download/20.0.0git-20250103-release/Clang-20.0.0git-20250103.tar.gz
-        tar -xzf Clang-20.0.0git-20250103.tar.gz
-        sudo mv Clang-20.0.0git-20250103 /usr/local/clang-20
-        echo "/usr/local/clang-20/bin" >> $GITHUB_PATH
+        tar -xzf ${{ paths.downloaded }}  # Extract the downloaded artifact (assuming it's a tar archive)
+
+    - name: Set up environment variable for zyc clang 20 compiler
+      run: |
+        echo "export PATH=$HOME/clang-20.0.0git-20250103/bin:$PATH" >> $GITHUB_ENV  # Set the path to the compiler's bin directory
 
     - name: Android kernel build
       uses: lemniskett/android-kernel-actions@master
       id: build
       env:
         NAME: Starqltechn
-        CC: clang
-        CXX: clang++
+        CC: clang  # Use clang as the compiler
+        CXX: clang++  # Use clang++ as the C++ compiler (if applicable)
+        # Rest of your existing environment variables (arch, defconfig, image)
       with:
         arch: arm64
-        compiler: clang
         defconfig: starqlte_chn_open_defconfig
         image: Image.gz-dtb
 
@@ -46,4 +46,4 @@ jobs:
         name: module
         path: |
           ${{ steps.build.outputs.outfile }}
-          ./out/drivers/memkernel/dogi.memk.ko
+          ./out/drivers/memkernel/vinn.memk.ko
