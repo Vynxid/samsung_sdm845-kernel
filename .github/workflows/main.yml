@@ -23,9 +23,15 @@ jobs:
         # Unduh dan ekstrak Zyc Clang 20
         curl -LO https://github.com/ZyCromerZ/Clang/releases/download/20.0.0git-20250123-release/Clang-20.0.0git-20250123.tar.gz
         tar -xvf Clang-20.0.0git-20250123.tar.gz
+        # Periksa isi folder setelah ekstraksi
+        echo "Isi setelah ekstraksi Clang:"
+        ls -al
         # Unduh dan ekstrak GCC 14.2
         curl -LO https://developer.arm.com/-/media/Files/downloads/gnu/14.2.rel1/binrel/arm-gnu-toolchain-14.2.rel1-x86_64-aarch64-none-linux-gnu.tar.xz
         tar -xvf arm-gnu-toolchain-14.2.rel1-x86_64-aarch64-none-linux-gnu.tar.xz
+        # Periksa isi folder setelah ekstraksi GCC
+        echo "Isi setelah ekstraksi GCC:"
+        ls -al
         cd ..
 
     - name: Debug toolchain path
