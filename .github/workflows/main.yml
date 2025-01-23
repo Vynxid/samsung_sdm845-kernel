@@ -15,23 +15,28 @@ jobs:
       run: |
         curl -LSs "https://raw.githubusercontent.com/Poko-Apps/MemKernel/main/kernel/setup.sh" | bash -s M dogi
 
-    - name: Install Zyc Clang 20
+    - name: Install dependencies
       run: |
-        sudo apt-key adv --fetch-keys https://apt.llvm.org/llvm-snapshot.gpg.key
-        sudo add-apt-repository "deb http://apt.llvm.org/focal/ llvm-toolchain-focal-20 main"
         sudo apt-get update
-        sudo apt-get install -y clang-20 lld-20
+        sudo apt-get install -y tar wget
+
+    - name: Download and install Clang 20
+      run: |
+        wget https://github.com/ZyCromerZ/Clang/releases/download/20.0.0git-20250103-release/Clang-20.0.0git-20250103.tar.gz
+        tar -xzf Clang-20.0.0git-20250103.tar.gz
+        sudo mv Clang-20.0.0git-20250103 /usr/local/clang-20
+        echo "/usr/local/clang-20/bin" >> $GITHUB_PATH
 
     - name: Android kernel build
       uses: lemniskett/android-kernel-actions@master
       id: build
       env:
         NAME: Starqltechn
-        CC: clang-20
-        CXX: clang++-20
+        CC: clang
+        CXX: clang++
       with:
         arch: arm64
-        compiler: clang-20
+        compiler: clang
         defconfig: starqlte_chn_open_defconfig
         image: Image.gz-dtb
 
