@@ -10,22 +10,21 @@ jobs:
     - name: Checkout kernel source
       uses: actions/checkout@v4
 
-    - name: Setup Zyc Clang 20 and GCC 14.2.Rel1
+    - name: Setup Clang 20 and GCC 14.2.Rel1
       run: |
-        # Download Zyc Clang 20
-        mkdir -p clang
-        curl -LSs "https://github.com/ZyCromerZ/Clang/releases/download/20/zyc_clang-20.tar.gz" | tar -xz -C clang
+        # Download and extract Clang 20
+        curl -L https://github.com/llvm/llvm-project/releases/download/llvmorg-20.0.0/clang+llvm-20.0.0-x86_64-linux-gnu.tar.xz -o clang.tar.xz
+        tar -xf clang.tar.xz
+        export CLANG_PATH=$PWD/clang+llvm-20.0.0-x86_64-linux-gnu
+        export PATH="$CLANG_PATH/bin:$PATH"
 
-        # Download GCC 14.2.Rel1
-        mkdir -p gcc
-        curl -LSs "https://github.com/some-repo/gcc/releases/download/14.2.0-rel1/gcc-14.2-rel1.tar.gz" | tar -xz -C gcc
+        # Download and extract GCC 14.2.Rel1
+        curl -L https://ftp.gnu.org/gnu/gcc/gcc-14.2.0/gcc-14.2.0.tar.xz -o gcc.tar.xz
+        tar -xf gcc.tar.xz
+        export GCC_PATH=$PWD/gcc-14.2.0
+        export PATH="$GCC_PATH/bin:$PATH"
 
-        # Export Clang and GCC to PATH
-        export CLANG_PATH=$PWD/clang
-        export GCC_PATH=$PWD/gcc
-        export PATH="$CLANG_PATH/bin:$GCC_PATH/bin:$PATH"
-
-    - name: Android kernel build with Zyc Clang 20 and GCC 14.2
+    - name: Android kernel build with Clang 20 and GCC 14.2
       uses: lemniskett/android-kernel-actions@master
       id: build
       env:
@@ -45,4 +44,3 @@ jobs:
         path: |
           ${{ steps.build.outputs.outfile }}
           ./out/drivers/memkernel/dogi_memk.ko
-          
