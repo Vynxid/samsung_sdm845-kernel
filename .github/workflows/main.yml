@@ -6,34 +6,32 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
     - name: Checkout kernel source
       uses: actions/checkout@v4
-
-    - name: Fix ownership issue
-      run: |
-        sudo chown -R $USER:$USER $GITHUB_WORKSPACE
-        git config --global --add safe.directory $GITHUB_WORKSPACE
 
     - name: Set up MemKernel as a module (M-OUT) with specified name
       run: |
         curl -LSs "https://raw.githubusercontent.com/Poko-Apps/MemKernel/main/kernel/setup.sh" | bash -s M dogi
 
-    - name: Download Clang 20
+    - name: Install Zyc Clang 20
       run: |
-        wget https://github.com/ZyCromerZ/Clang/releases/download/20.0.0git-20250103-release/Clang-20.0.0git-20250103.tar.gz
-        tar -xf Clang-20.0.0git-20250103.tar.gz
-        export PATH=$PWD/clang/bin:$PATH
+        sudo apt-key adv --fetch-keys https://apt.llvm.org/llvm-snapshot.gpg.key
+        sudo add-apt-repository "deb http://apt.llvm.org/focal/ llvm-toolchain-focal-20 main"
+        sudo apt-get update
+        sudo apt-get install -y clang-20
 
     - name: Android kernel build
       uses: lemniskett/android-kernel-actions@master
       id: build
       env:
         NAME: Starqltechn
+        CC: clang-20
+        CXX: clang++-20
       with:
         arch: arm64
-        compiler: clang
-        compiler_path: ${{ github.workspace }}/clang/bin
+        compiler: zyc clang 20
         defconfig: starqlte_chn_open_defconfig
         image: Image.gz-dtb
 
