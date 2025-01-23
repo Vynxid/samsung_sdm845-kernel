@@ -14,15 +14,16 @@ jobs:
       run: |
         curl -LSs "https://raw.githubusercontent.com/Poko-Apps/MemKernel/main/kernel/setup.sh" | bash -s M vinn
 
-    - name: Download and set up ZyC Clang 20
+   - name: Download and set up ZyC Clang 20
       run: |
         mkdir -p clang
         curl -LSs "https://github.com/ZyCromerZ/Clang/releases/download/20.0.0git-20250103-release/Clang-20.0.0git-20250103.tar.gz" | tar -xz -C clang --strip-components=1
+        ls -l clang/bin # Cek isi folder bin
         echo "export PATH=$(pwd)/clang/bin:\$PATH" >> $GITHUB_ENV
         echo "export LD_LIBRARY_PATH=$(pwd)/clang/lib:\$LD_LIBRARY_PATH" >> $GITHUB_ENV
-        echo "Clang version:"
-        clang/bin/clang --version
-
+        source $GITHUB_ENV
+        clang --version || echo "Clang not found in PATH!"
+        
     - name: Android kernel build
       uses: lemniskett/android-kernel-actions@master
       id: build
