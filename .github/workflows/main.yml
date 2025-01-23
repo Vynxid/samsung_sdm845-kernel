@@ -21,18 +21,18 @@ jobs:
 
     - name: Install Zyc Clang 20
       run: |
-        sudo apt-key adv --fetch-keys https://apt.llvm.org/llvm-snapshot.gpg.key
-        sudo add-apt-repository "deb http://apt.llvm.org/focal/ llvm-toolchain-focal-20 main"
-        sudo apt-get update
-        sudo apt-get install -y clang-20
+        wget https://github.com/ZyCromerZ/Clang/releases/download/20.0.0git-20250103-release/Clang-20.0.0git-20250103.tar.gz
+        tar -xzf Clang-20.0.0git-20250103.tar.gz
+        sudo mv Clang-20.0.0git-20250103 /usr/local/clang-20
+        export PATH=/usr/local/clang-20/bin:$PATH
 
     - name: Android kernel build
       uses: lemniskett/android-kernel-actions@master
       id: build
       env:
         NAME: Starqltechn
-        CC: clang-20
-        CXX: clang++-20
+        CC: clang
+        CXX: clang++
       with:
         arch: arm64
         compiler: zyc clang 20
