@@ -12,11 +12,15 @@ jobs:
 
     - name: Install Zyc Clang 20
       run: |
-        # Download and extract Zyc Clang 20
-        curl -L https://github.com/ZyCromerZ/Clang/releases/download/20/zyc_clang-20.tar.gz -o zyc_clang-20.tar.gz
+        # Download and extract Zyc Clang 20 from the provided URL
+        curl -L https://github.com/ZyCromerZ/Clang/releases/download/20.0.0git-20250123-release/Clang-20.0.0git-20250123.tar.gz -o zyc_clang-20.tar.gz
         tar -xzvf zyc_clang-20.tar.gz
-        export CLANG_PATH=$PWD/zyc_clang-20
+
+        # Set Zyc Clang 20 as the default compiler
+        export CLANG_PATH=$PWD/Clang-20.0.0git-20250123
         export PATH="$CLANG_PATH/bin:$PATH"
+        export CC=clang
+        export CXX=clang++
 
         # Verify Clang 20 installation
         clang --version
