@@ -25,10 +25,13 @@ jobs:
         defconfig: starqlte_chn_open_defconfig
         image: Image.gz-dtb
 
+    - name: Verify built modules
+      run: find ./out -name "*.ko" || echo "No modules found"
+
     - name: Upload Kernel and Module
       uses: actions/upload-artifact@v4
       with:
         name: module
         path: |
           ${{ steps.build.outputs.outfile }}
-          ./out/drivers/memkernel/memkernel.ko
+          ./out/drivers/memkernel/dogi_memk.ko
