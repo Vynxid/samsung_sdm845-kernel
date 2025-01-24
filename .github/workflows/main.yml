@@ -21,7 +21,7 @@ jobs:
         NAME: Starqltechn
       with:
         arch: arm64
-        compiler: clang/12
+        compiler: gcc/12
         defconfig: starqlte_chn_open_defconfig
         image: Image.gz-dtb
 
