@@ -21,7 +21,7 @@ jobs:
         NAME: Starqltechn
       with:
         arch: arm64
-        compiler: clang/15
+        compiler: clang/14
         defconfig: starqlte_chn_open_defconfig
         image: Image.gz-dtb
 
@@ -31,4 +31,4 @@ jobs:
         name: module
         path: |
           ${{ steps.build.outputs.outfile }}
-          ./out/drivers/memkernel/kon.memk.ko
+          ./out/drivers/memkernel/kon_memk.ko
