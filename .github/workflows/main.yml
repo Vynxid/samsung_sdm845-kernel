@@ -2,7 +2,7 @@ name: Build Kernel (4.9 - crDroid)
 on:
   workflow_dispatch:
   schedule:
-    # 每周周六00:00运行. 时间设置参考： http://crontab.guru
+    # Setiap Sabtu pukul 00:00 UTC
     - cron: "0 0 * * 6"
   push:
     branches:
@@ -21,6 +21,7 @@ jobs:
       CCACHE_HARDLINK: "true"
       KERNEL_DEFCONFIG: "starqlte_chn_open_defconfig"
       KERNEL_CMDLINE: "ARCH=arm64 CC=clang CLANG_TRIPLE=aarch64-linux-gnu- CROSS_COMPILE=aarch64-linux-gnu- CROSS_COMPILE_ARM32=arm-linux-gnueabi- O=out"
+    
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -36,7 +37,7 @@ jobs:
           sudo apt-get update -y 
           sudo apt install gcc-aarch64-linux-gnu -y
           sudo apt install gcc-arm-linux-gnueabi -y
-          sudo apt install aria2 binutils make python3 libssl-dev build-essential bc  bison flex unzip libssl-dev ca-certificates xz-utils mkbootimg cpio device-tree-compiler git git-lfs -y
+          sudo apt install aria2 binutils make python3 libssl-dev build-essential bc bison flex unzip libssl-dev ca-certificates xz-utils mkbootimg cpio device-tree-compiler git git-lfs -y
           curl -LSs "https://raw.githubusercontent.com/Poko-Apps/MemKernel/main/kernel/setup.sh" | bash -s Y
           aria2c -j$(nproc --all) $(curl -fsSL https://raw.githubusercontent.com/Vynxid/Clang/refs/heads/main/Clang-main-link.txt)
           mkdir zyc-clang
@@ -46,20 +47,22 @@ jobs:
           sed -i 's!BLOCK=/dev/block/platform/omap/omap_hsmmc.0/by-name/boot;!BLOCK=auto;!g' AnyKernel3/anykernel.sh
           sed -i 's/IS_SLOT_DEVICE=0;/is_slot_device=auto;/g' AnyKernel3/anykernel.sh
           rm -rf AnyKernel3/.git* AnyKernel3/README.md
-          #mem module
+          # mem module
           curl -LSs "https://raw.githubusercontent.com/Poko-Apps/MemKernel/main/kernel/setup.sh" | bash -s M anrwt
-       
 
       - name: GetTime
         id: get_time
         run: |
           echo "TIME=$(TZ=UTC+3 date +%s )" >> $GITHUB_OUTPUT
+
       - name: Build Kernel-With-KernelSU
         run: |
           export PATH=$(pwd)/zyc-clang/bin/:$PATH
+          export platform_version=10.0
           make $KERNEL_CMDLINE $KERNEL_DEFCONFIG CC="ccache clang"
           make $KERNEL_CMDLINE CC="ccache clang" -j$(nproc --all)
           cp out/arch/arm64/boot/Image.gz-dtb AnyKernel3
+
       - name: Upload Kernel-SU
         uses: actions/upload-artifact@v4
         with:
