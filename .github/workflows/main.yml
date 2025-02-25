@@ -58,7 +58,7 @@ jobs:
       - name: Build Kernel-With-KernelSU
         run: |
           export PATH=$(pwd)/zyc-clang/bin/:$PATH
-          export platform_version=10.0
+          export PLATFORM_VERSION=10.0
           make $KERNEL_CMDLINE $KERNEL_DEFCONFIG CC="ccache clang"
           make $KERNEL_CMDLINE CC="ccache clang" -j$(nproc --all)
           cp out/arch/arm64/boot/Image.gz-dtb AnyKernel3
