@@ -146,8 +146,8 @@ void ksu_apply_kernelsu_rules()
 	susfs_set_ksu_sid();
 	susfs_set_zygote_sid();
 #endif
+
 	mutex_unlock(&ksu_rules);
-	rcu_read_unlock();
 }
 
 #define MAX_SEPOL_LEN 128
