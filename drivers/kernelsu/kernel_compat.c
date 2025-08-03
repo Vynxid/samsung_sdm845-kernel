@@ -9,6 +9,7 @@
 #include <linux/uaccess.h>
 #include "klog.h" // IWYU pragma: keep
 #include "kernel_compat.h" // Add check Huawei Device
+
 #if LINUX_VERSION_CODE < KERNEL_VERSION(4, 10, 0) || defined(CONFIG_IS_HW_HISI) || defined(CONFIG_KSU_ALLOWLIST_WORKAROUND)
 #include <linux/key.h>
 #include <linux/errno.h>
@@ -76,13 +77,12 @@ void ksu_android_ns_fs_check()
 	task_unlock(current);
 }
 
-int ksu_access_ok(const void *addr, unsigned long size) {
-#if LINUX_VERSION_CODE < KERNEL_VERSION(5,0,0)
-    /* For kernels before 5.0.0, pass the type argument to access_ok. */
-    return access_ok(VERIFY_READ, addr, size);
+int ksu_access_ok(const void *addr, unsigned long size) 
+{
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(5,0,0)
+	return access_ok(addr, size);
 #else
-    /* For kernels 5.0.0 and later, ignore the type argument. */
-    return access_ok(addr, size);
+	return access_ok(VERIFY_READ, addr, size);
 #endif
 }
 
@@ -183,15 +183,6 @@ long ksu_strncpy_from_user_nofault(char *dst, const void __user *unsafe_addr,
 	return ret;
 }
 #endif
-
-static inline int ksu_access_ok(const void *addr, unsigned long size)
-{
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(5,0,0)
-	return access_ok(addr, size);
-#else
-	return access_ok(VERIFY_READ, addr, size);
-#endif
-}
 
 long ksu_strncpy_from_user_retry(char *dst, const void __user *unsafe_addr,
 				   long count)
