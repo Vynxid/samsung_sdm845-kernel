@@ -39,7 +39,7 @@ jobs:
           sudo apt install gcc-arm-linux-gnueabi -y
           sudo apt install aria2 binutils make python3 libssl-dev build-essential bc bison flex unzip libssl-dev ca-certificates xz-utils mkbootimg cpio device-tree-compiler git git-lfs -y
           curl -LSs "https://raw.githubusercontent.com/Poko-Apps/MemKernel/main/kernel/setup.sh" | bash -s Y
-          aria2c -j$(nproc --all) $(curl -fsSL https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+archive/67af9f576276f27363074c4388e2cf0963bab6df/clang-r563880b.tar.gz)
+          aria2c -j$(nproc --all) $(curl -fsSL https://raw.githubusercontent.com/Vynxid/Clang/refs/heads/main/Clang-main-link.txt)
           mkdir zyc-clang
           tar -xzvf Clang-*.tar.gz -C zyc-clang >> /dev/null
           git clone https://github.com/osm0sis/AnyKernel3
